@@ -1,7 +1,7 @@
 # React
-## Practica Api del Clima con React
+## Practica Api del Clima con React 
 
-## Integrantes
+## Integrantes 📚
 
 ### Pablo Basso
 ### Nahuel Nuñez 
