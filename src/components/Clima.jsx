@@ -77,3 +77,73 @@ function Clima() {
       setEstaCargando(false); // Desactiva el estado de carga (quiere decir que si se muestra los datos de alguna ciudad, deja de mostrar el spinner con la carga de datos)
     }
   };
+}
+
+///PARTE MIA
+
+ // FUNCIÓN AUXILIAR - Convierte códigos de icono de la API a emojis
+  const obtenerIconoClima = (iconCode) => {
+    const iconMap = {
+      "01d": "☀", // Cielo despejado - día
+      "01n": "🌙", // Cielo despejado - noche
+      "02d": "⛅", // Pocas nubes - día
+      "02n": "☁", // Pocas nubes - noche
+      "03d": "☁", // Nubes dispersas - día
+      "03n": "☁", // Nubes dispersas - noche
+      "04d": "☁", // Nubes rotas - día
+      "04n": "☁", // Nubes rotas - noche
+      "09d": "🌧", // Lluvia - día
+      "09n": "🌧", // Lluvia - noche
+      "10d": "🌦", // Lluvia - día
+      "10n": "🌧", // Lluvia - noche
+      "11d": "⛈", // Tormenta - día
+      "11n": "⛈", // Tormenta - noche
+      "13d": "❄", // Nieve - día
+      "13n": "❄", // Nieve - noche
+      "50d": "🌫", // Niebla - día
+      "50n": "🌫", // Niebla - noche
+    };
+    return iconMap[iconCode] || "🌈"; // Retorna el emoji o "🌈" por defecto si no encuentra el código
+  };
+
+  // FUNCIÓN AUXILIAR - Determina el color del badge según la temperatura
+  const obtenerColorTemperatura = (temp) => {
+    if (temp < 10) return "info"; // Azul para temperaturas frías (<10°C)
+    if (temp < 25) return "success"; // Verde para temperaturas templadas (10-24°C)
+    if (temp < 35) return "warning"; // Amarillo para temperaturas cálidas (25-34°C)
+    return "danger"; // Rojo para temperaturas muy altas (≥35°C)
+  };
+
+  // RENDERIZADO DEL COMPONENTE
+  return (
+    <Row className="justify-content-center">
+      <Col md={4} className="mb-3 mt-4">
+        <Card className=" shadow-sm">
+          <Card.Header>
+            <div className="d-flex justify-content-between align-items-center">
+              <h5 className="mb-0">🌤 Clima Actual</h5>
+            </div>
+          </Card.Header>
+          {/* SELECTOR DE CIUDAD - Control para elegir la ciudad */}
+          <Card.Body>
+            <div className="mb-3">
+              <label className="form-label">
+                <strong>Ciudad:</strong>
+              </label>
+              <div className="d-flex gap-2">
+                <select
+                  className="form-select" // Clase  para seleccionar
+                  value={ciudad} // Valor controlado por el estado
+                  onChange={(e) => setCiudad(e.target.value)} // Se actualizael estado cuando cambia la selección
+                  disabled={estaCargando} // Se deshabilita el spinner durante la carga
+                >
+                  {/* Opciones de ciudades disponibles: Tomas o Nahuel agreguen lasa cuidades de Argentina que faltan  */}
+                  <option value="Buenos Aires">Buenos Aires</option>
+                  <option value="Córdoba">Córdoba</option>
+                  <option value="Rosario">Rosario</option>
+                  <option value="Mendoza">Mendoza</option>
+                  <option value="Bariloche">Bariloche</option>
+                  <option value="San Miguel de Tucumán">
+                    San Miguel de Tucumán
+                  </option>
+                </select>
