@@ -147,3 +147,105 @@ function Clima() {
                     San Miguel de Tucumán
                   </option>
                 </select>
+         (Tomas): 
+               {/* BOTÓN DE ACTUALIZAR - Para recargar datos manualmente */}
+                <Button
+                  variant="outline-primary" //  botón con borde azul
+                  onClick={cargarClima} // Ejecuta la función al hacer click
+                  disabled={estaCargando} // Se deshabilita el spinner durante la carga
+                >
+                  {estaCargando ? <Spinner size="sm" /> : "🔄"}{" "}
+                  {/* Muestra spinner si carga, sino icono */}
+                </Button>
+              </div>
+            </div>
+
+            {estaCargando && (
+              <div className="text-center my-4">
+                <Spinner animation="border" variant="primary" />
+                <div className="mt-2 text-muted">
+                  Cargando datos del clima...
+                </div>
+              </div>
+            )}
+
+            {/* ALERTA DE ERROR - Se muestra solo si hay error */}
+            {error && (
+              <Alert variant="danger">
+                <strong>Error:</strong> {error}{" "}
+                {/* Muestra el mensaje de error */}
+                <div className="mt-2">
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={cargarClima}
+                  >
+                    Reintentar {/* Botón para intentar cargar nuevamente */}
+                  </Button>
+                </div>
+              </Alert>
+            )}
+
+            {/* INFORMACIÓN DEL CLIMA - Se muestra cuando hay datos y no hay carga/error */}
+            {!estaCargando && !error && clima && (
+              <div>
+                {/* SECCIÓN PRINCIPAL - Temperatura y información básica */}
+                <div className="text-center mb-4">
+                  <div style={{ fontSize: "4rem" }}>{clima.icono}</div> {/* Icono grande del clima */}
+                  <div className="display-4"> {/* Tamaño de display grande para temperatura */}
+                    <Badge bg={obtenerColorTemperatura(clima.temperatura)}>  {/* Badge con color según temperatura */}
+                      {clima.temperatura}°C {/* Temperatura en Celsius */}
+                    </Badge>
+                  </div>
+                  <h4>
+                    {clima.ciudad}, {clima.pais} {/* Ciudad y país */}
+                  </h4>
+                  <div className="text-muted text-capitalize">
+                    {clima.descripcion}
+                  </div>
+                  <div className="small text-muted mt-1">
+                    Sensación térmica: {clima.sensacionTermica}°C {/* Sensación térmica */}
+                  </div>
+                </div>
+
+               {/* DATOS ADICIONALES - métricas del clima */}
+                <Row className="text-center">
+                  {/* HUMEDAD */}
+                  <Col xs={6} className="mb-3">
+                    <div className="border rounded p-2">
+                      <div>💧 Humedad</div>
+                      <div className="h5 mb-0">{clima.humedad}%</div>
+                    </div>
+                  </Col>
+                  {/* VIENTO */}
+                  <Col xs={6} className="mb-3">
+                    <div className="border rounded p-2">
+                      <div>💨 Viento</div>
+                      <div className="h5 mb-0">{clima.viento} km/h</div>
+                    </div>
+                  </Col>
+                  {/* PRESIÓN ATMOSFÉRICA */}
+                  <Col xs={6}>
+                    <div className="border rounded p-2">
+                      <div>📊 Presión</div>
+                      <div className="h5 mb-0">{clima.presion} hPa</div>
+                    </div>
+                  </Col>
+                  {/* INFORMACIÓN DE ACTUALIZACIÓN */}
+                  <Col xs={6}>
+                    <div className="border rounded p-2">
+                      <div>🔄 Actualización</div>
+                      <div className="small">Cada 5 min</div> {/* Frecuencia de actualización */}
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Card.Body>
+        </Card>
+      </Col>
+    </Row>
+  );
+
+
+export default Clima;
