@@ -5,7 +5,7 @@ import { Card, Button, Badge, Alert, Spinner, Row, Col } from "react-bootstrap";
 function Clima() {
   const urlBase = "https://api.openweathermap.org/data/2.5/weather"; // URL base de la API del clima
   const API_KEY = "3aeee729ce3d796a60a9477c5af3f148"; // CLAVE API - En producción usar variables de entorno, ahora que es de prueba se puede utilizar la clave personal que te da la API
-
+  /* const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY; */
   const [clima, setClima] = useState(null); // Guarda los datos del clima, inicia en null
   const [estaCargando, setEstaCargando] = useState(true); // Controla si está cargando datos, en el caso de que la api demore en devolver la respuesta o cuando ingresan mal una ciudad
   const [error, setError] = useState(null); // Guarda mensajes de error, null si no hay error
@@ -55,6 +55,8 @@ function Clima() {
         descripcion: data.weather[0].description, // Descripción del clima
         humedad: data.main.humidity, // Porcentaje de humedad
         viento: Math.round(data.wind.speed * 3.6), // Velocidad del viento convertida de m/s a km/h
+        direccionViento: data.wind.deg, // ← NUEVO: Dirección en grados
+        rafagasViento: data.wind.gust ? Math.round(data.wind.gust * 3.6) : null, // ← NUEVO: Rafagas
         presion: data.main.pressure, // Presión atmosférica en hPa
         icono: obtenerIconoClima(data.weather[0].icon), // Emoji que corrresponde  al icono de la API
         sensacionTermica: Math.round(data.main.feels_like), // Sensación térmica redondeada gracias a Math.round
@@ -77,11 +79,8 @@ function Clima() {
       setEstaCargando(false); // Desactiva el estado de carga (quiere decir que si se muestra los datos de alguna ciudad, deja de mostrar el spinner con la carga de datos)
     }
   };
-}
 
-///PARTE MIA
-
- // FUNCIÓN AUXILIAR - Convierte códigos de icono de la API a emojis
+  // FUNCIÓN AUXILIAR - Convierte códigos de icono de la API a emojis
   const obtenerIconoClima = (iconCode) => {
     const iconMap = {
       "01d": "☀", // Cielo despejado - día
@@ -142,13 +141,18 @@ function Clima() {
                   <option value="Córdoba">Córdoba</option>
                   <option value="Rosario">Rosario</option>
                   <option value="Mendoza">Mendoza</option>
+                  <option value="San Juan">San Juan</option>
+                  <option value="La Rioja">La Rioja</option>
+                  <option value="Jujuy">Jujuy</option>
+                  <option value="Necochea">Necochea</option>
+                  <option value="Concepcion">Concepción</option>
                   <option value="Bariloche">Bariloche</option>
                   <option value="San Miguel de Tucumán">
                     San Miguel de Tucumán
                   </option>
-                </select>
-         (Tomas): 
-               {/* BOTÓN DE ACTUALIZAR - Para recargar datos manualmente */}
+                </select>
+
+                {/* BOTÓN DE ACTUALIZAR - Para recargar datos manualmente */}
                 <Button
                   variant="outline-primary" //  botón con borde azul
                   onClick={cargarClima} // Ejecuta la función al hacer click
@@ -191,9 +195,14 @@ function Clima() {
               <div>
                 {/* SECCIÓN PRINCIPAL - Temperatura y información básica */}
                 <div className="text-center mb-4">
-                  <div style={{ fontSize: "4rem" }}>{clima.icono}</div> {/* Icono grande del clima */}
-                  <div className="display-4"> {/* Tamaño de display grande para temperatura */}
-                    <Badge bg={obtenerColorTemperatura(clima.temperatura)}>  {/* Badge con color según temperatura */}
+                  <div style={{ fontSize: "4rem" }}>{clima.icono}</div>{" "}
+                  {/* Icono grande del clima */}
+                  <div className="display-4">
+                    {" "}
+                    {/* Tamaño de display grande para temperatura */}
+                    <Badge bg={obtenerColorTemperatura(clima.temperatura)}>
+                      {" "}
+                      {/* Badge con color según temperatura */}
                       {clima.temperatura}°C {/* Temperatura en Celsius */}
                     </Badge>
                   </div>
@@ -204,11 +213,12 @@ function Clima() {
                     {clima.descripcion}
                   </div>
                   <div className="small text-muted mt-1">
-                    Sensación térmica: {clima.sensacionTermica}°C {/* Sensación térmica */}
+                    Sensación térmica: {clima.sensacionTermica}°C{" "}
+                    {/* Sensación térmica */}
                   </div>
                 </div>
 
-               {/* DATOS ADICIONALES - métricas del clima */}
+                {/* DATOS ADICIONALES - métricas del clima */}
                 <Row className="text-center">
                   {/* HUMEDAD */}
                   <Col xs={6} className="mb-3">
@@ -235,7 +245,8 @@ function Clima() {
                   <Col xs={6}>
                     <div className="border rounded p-2">
                       <div>🔄 Actualización</div>
-                      <div className="small">Cada 5 min</div> {/* Frecuencia de actualización */}
+                      <div className="small">Cada 5 min</div>{" "}
+                      {/* Frecuencia de actualización */}
                     </div>
                   </Col>
                 </Row>
@@ -246,6 +257,6 @@ function Clima() {
       </Col>
     </Row>
   );
-
+}
 
 export default Clima;
